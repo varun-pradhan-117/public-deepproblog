@@ -7,4 +7,3 @@ t(0.1) :: noisy.
 addition_noisy(X,Y,Z) :- noisy, uniform(X,Y,Z).
 addition_noisy(X,Y,Z) :- \+noisy, digit(X,N1), digit(Y,N2), Z is N1+N2.
 
-addition(X,Y,Z) :- digit(X,N1), digit(Y,N2), Z is N1+N2.

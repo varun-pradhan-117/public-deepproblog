@@ -229,7 +229,10 @@ deepproblog.egg-info/
 *.pdf
 *.pth
 *.pyc
-
+.venv
+env
+.vs
+.vscode
 *.ipynb
 
 
@@ -261,3 +264,13 @@ src/deepproblog/examples/Successor/data/MNIST/
 /build/
 /dist/
 *.whl
+*.vsidx
+.vs/deepproblog/v17/.wsuo
+*.db
+*.bin
+.vs/ProjectSettings.json
+.vs/PythonSettings.json
+*.sqlite
+.vscode/settings.json
+.vs/VSWorkspaceState.json
+accuracies.txt

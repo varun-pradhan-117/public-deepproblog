@@ -86,7 +86,9 @@ class SGD(Optimizer):
 
     def step(self):
         Optimizer.step(self)
+        
         for k in self._params_grad:
+            #print(k)
             self.model.parameters[k] -= float(self.get_lr() * self._params_grad[k])
             self.model.parameters[k] = max(min(self.model.parameters[k], 1.0), 0.0)
         for group in self.model.parameter_groups:

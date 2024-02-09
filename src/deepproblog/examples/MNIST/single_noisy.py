@@ -2,7 +2,7 @@ from random import randint
 
 import torch
 from problog.logic import Constant
-
+import sys
 from deepproblog.dataset import DataLoader
 from deepproblog.dataset import NoiseMutatorDecorator, MutatingDataset
 from deepproblog.engines import ExactEngine
@@ -15,45 +15,43 @@ from deepproblog.query import Query
 from deepproblog.train import train_model
 from deepproblog.evaluate import get_confusion_matrix
 
-
+# Noise function to pass to mutator
 def noise(_, query: Query):
-    new_query = query.replace_output([Constant(randint(0, 18))])
+    new_query = query.replace_output([Constant(randint(0, 9))])
     return new_query
 
 
-dataset = MNISTOperator(
-    dataset_name="train",
-    function_name="addition_noisy",
-    operator=sum,
-    size=1,
-)
 
-noisy_dataset = MutatingDataset(dataset, NoiseMutatorDecorator(0.4, noise))
-#print(noisy_dataset)
-queries = DataLoader(noisy_dataset, 1)
+# Size of dataset
+#N=5000
+epoch_count=1
+# Set fraction of noise
+noise_fraction=0.8
+dataset=single_num(1,"train")#.subset(N)
+
+
+noisy_dataset=MutatingDataset(dataset,NoiseMutatorDecorator(noise_fraction,noise))
+queries=DataLoader(noisy_dataset,1)
+test_set=single_num(1,"test")
 
 network = MNIST_Net()
 net = Network(network, "mnist_net", batching=True)
 net.optimizer = torch.optim.Adam(network.parameters(), lr=1e-3)
-model = Model("models/noisy_addition.pl", [net])
-#model = Model("models/noisy_single.pl", [net])
+model = Model("models/noisy_single.pl", [net])
 
 model.add_tensor_source("train", MNIST_train)
 model.add_tensor_source("test", MNIST_test)
 
 model.set_engine(ExactEngine(model))
-model.optimizer = SGD(model, 1e-3)
+model.optimizer = SGD(model, 3e-3)
 
-train = train_model(model, queries, 10, log_iter=100)
-
+train = train_model(model, queries, epoch_count, log_iter=100)
+get_confusion_matrix(model, test_set, verbose=1).accuracy()
 """ train.logger.comment(
     "Accuracy {}".format(get_confusion_matrix(model, test_set, verbose=1).accuracy())
 )
 train.logger.write_to_file("log/" + name) """
 
 if __name__=="__main__":
-    print(model.networks["mnist_net"])
-    #print(MNIST_train[[0]])
-    #print(len(i1[0]))
-    #print(model.networks['mnist_net'].network_module(i1[0]))
+    
     pass

@@ -1,11 +1,5 @@
 # DeepProbLog
-[![Unit tests](https://github.com/ML-KULeuven/deepproblog/actions/workflows/python-app.yml/badge.svg)](https://github.com/ML-KULeuven/deepproblog/actions/workflows/python-app.yml)
-
-DeepProbLog is an extension of [ProbLog](https://dtai.cs.kuleuven.be/problog/)
-that integrates Probabilistic Logic Programming with deep learning by introducing the neural predicate. 
-The neural predicate represents probabilistic facts whose probabilites are parameterized by neural networks.
-For more information, consult the papers listed below.
-
+This fork of https://github.com/ML-KULeuven/deepproblog/tree/master is solely for academic purposes.
 ## Installation
 DeepProbLog can easily be installed using the following command:
 Make sure the following packages are installed:
@@ -32,9 +26,9 @@ DeepProbLog has the following requirements:
 * [PyTorch](https://pytorch.org/)
 * [TorchVision](https://pytorch.org/vision/stable/index.html)
 
-## Approximate Inference
+## Inference
 
-To use Approximate Inference, we have the following additional requirements
+To use Inference, we have the following additional requirements
 * [PySwip](https://github.com/ML-KULeuven/pyswip) 
     - Use `pip install git+https://github.com/ML-KULeuven/pyswip`
 * [SWI-Prolog < 9.0.0](https://www.swi-prolog.org/)
@@ -45,18 +39,17 @@ sudo apt install swi-prolog=8.4* swi-prolog-nox=8.4* swi-prolog-x=8.4*
 ```
 ## Experiments
 
-The experiments are presented in the papers are available in the [src/deepproblog/examples](src/deepproblog/examples) directory.
+The experiments are presented in the report are available in the [src/deepproblog/examples/MNIST](src/deepproblog/examples/MNIST) directory.
 
-## Papers
+Namely the script [single_noisy.py](src/deepproblog/examples/MNIST/single_noisy.py) and the script [neural_baseline/baseline.py](src/deepproblog/examples/MNIST/neural_baseline/baseline.py).
+
+The DeepProblog Program can be found in [noisy_single.pl](src\deepproblog\examples\MNIST\models\noisy_single.pl)
+
+## Papers Directly Used
 1. Robin Manhaeve, Sebastijan Dumancic, Angelika Kimmig, Thomas Demeester, Luc De Raedt:
 *DeepProbLog: Neural Probabilistic Logic Programming*. NeurIPS 2018: 3753-3763 ([paper](https://papers.nips.cc/paper/2018/hash/dc5d637ed5e62c36ecb73b654b05ba2a-Abstract.html))
 2. Robin Manhaeve, Sebastijan Dumancic, Angelika Kimmig, Thomas Demeester, Luc De Raedt:
 *Neural Probabilistic Logic Programming in DeepProbLog*. AIJ ([paper](https://www.sciencedirect.com/science/article/abs/pii/S0004370221000552))
 3. Robin Manhaeve, Giuseppe Marra, Luc De Raedt:
 *Approximate Inference for Neural Probabilistic Logic Programming*. KR 2021
-## License
-Copyright 2023 KU Leuven, DTAI Research Group
 
-Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.

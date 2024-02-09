@@ -1,7 +1,7 @@
 import signal
 import time
 from typing import List, Callable, Union
-
+import sys
 from deepproblog.dataset import DataLoader
 from deepproblog.model import Model
 from deepproblog.query import Query
@@ -117,6 +117,7 @@ class TrainObject(object):
             if verbose and epoch_size > log_iter:
                 print("Epoch", self.epoch + 1)
             for batch in loader:
+                
                 if self.interrupt:
                     break
                 self.i += 1
@@ -138,6 +139,7 @@ class TrainObject(object):
                     break
             if verbose and epoch_size > log_iter:
                 print("Epoch time: ", time.time() - epoch_start)
+                
             self.epoch += 1
         if "snapshot_name" in kwargs:
             filename = "{}_final.mdl".format(kwargs["snapshot_name"])

@@ -3,7 +3,7 @@ from json import dumps
 import torch
 
 from deepproblog.dataset import DataLoader
-from deepproblog.engines import ApproximateEngine, ExactEngine
+from deepproblog.engines import  ExactEngine#,ApproximateEngine
 from deepproblog.evaluate import get_confusion_matrix
 from deepproblog.examples.MNIST.data import MNIST_train, MNIST_test, addition
 from deepproblog.examples.MNIST.network import MNIST_Net
@@ -27,6 +27,7 @@ if pretrain is not None and pretrain > 0:
 net = Network(network, "mnist_net", batching=True)
 net.optimizer = torch.optim.Adam(network.parameters(), lr=1e-3)
 
+#model = Model("models/noisy_addition.pl", [net])
 model = Model("models/addition.pl", [net])
 if method == "exact":
     model.set_engine(ExactEngine(model), cache=True)
@@ -40,8 +41,8 @@ model.add_tensor_source("test", MNIST_test)
 
 loader = DataLoader(train_set, 2, False)
 train = train_model(model, loader, 1, log_iter=100, profile=0)
-model.save_state("snapshot/" + name + ".pth")
-train.logger.comment(dumps(model.get_hyperparameters()))
+#model.save_state("snapshot/" + name + ".pth")
+#train.logger.comment(dumps(model.get_hyperparameters()))
 train.logger.comment(
     "Accuracy {}".format(get_confusion_matrix(model, test_set, verbose=1).accuracy())
 )

@@ -1,6 +1,7 @@
 import itertools
 import json
 import random
+import copy
 from pathlib import Path
 from typing import Callable, List, Iterable, Tuple
 
@@ -35,6 +36,27 @@ def digits_to_number(digits: Iterable[int]) -> int:
         number += d
     return number
 
+def duplicate_with_random(dataset, fraction):
+    converted_dataset = copy.deepcopy(dataset)
+    new_dataset = []
+
+    for i in range(len(converted_dataset)):
+        data_copy = copy.deepcopy(converted_dataset[i][0])
+        label = converted_dataset[i][1]
+
+        if random.random() < fraction:
+            label = random.randint(0, 9)
+
+        new_dataset.append((data_copy, label))
+
+    return new_dataset
+
+def create_noisy_training_data(fraction):
+    MNIST_noise=duplicate_with_random(datasets["train"],fraction)
+    datasets["noise"]=MNIST_noise
+    return MNIST_Images("noise")
+
+
 
 class MNIST_Images(object):
     def __init__(self, subset):
@@ -46,7 +68,9 @@ class MNIST_Images(object):
 
 MNIST_train = MNIST_Images("train")
 MNIST_test = MNIST_Images("test")
-
+#MNIST_noisy = create_noisy_training_data(0.4)
+#MNIST_noise=duplicate_with_random(MNIST_train,0.4)
+#datasets["noise"]=MNIST_noise
 
 class MNIST(Dataset):
     def __len__(self):
@@ -55,14 +79,25 @@ class MNIST(Dataset):
     def to_query(self, i):
         l = Constant(self.data[i][1])
         return Query(
-            Term("digit", Term("tensor", Term(self.dataset, Term("a"))), l),
-            substitution={Term("a"): Constant(i)},
+            Term("digit", Term("a"), l),
+            substitution={Term("a"): Term("tensor",Term(self.dataset, Constant(i)))},
         )
 
     def __init__(self, dataset):
         self.dataset = dataset
         self.data = datasets[dataset]
 
+    def __getitem__(self,index):
+        image,label=self.data[index]
+        return image, label
+
+class MNIST_Single(MNIST):
+    def to_query(self,i):
+        l = Constant(self.data[i][1])
+        return Query(
+            Term("detection_noisy", Term("a"), l),
+            substitution={Term("a"): Term("tensor",Term(self.dataset, Constant(i)))},
+        )
 
 def addition(n: int, dataset: str, seed=None):
     """Returns a dataset for binary addition"""
@@ -74,6 +109,14 @@ def addition(n: int, dataset: str, seed=None):
         arity=2,
         seed=seed,
     )
+
+def single_num(n: int, dataset: str, seed=None):
+    """Returns a dataset for single value"""
+    return MNIST_Single(
+        dataset=dataset,
+    )
+
+#class MNISTSingle(Dataset,TorchDataset):
 
 
 class MNISTOperator(Dataset, TorchDataset):
@@ -200,3 +243,15 @@ class MNISTOperator(Dataset, TorchDataset):
 
     def __len__(self):
         return len(self.data)
+    
+
+
+
+if __name__=='__main__':
+    #noisy_train_data = create_noisy_training_data(0.4)
+    #print(MNIST_train[[0]])
+    #print(len(datasets["train"]))
+    sample=addition(1,"train")
+    sample2=single_num(1,"train")
+    print(sample.to_query(1))
+    print(sample2.to_query(0))
